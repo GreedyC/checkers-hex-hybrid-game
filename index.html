@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkers+Hex MVP</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, sans-serif;
+      background: #111;
+      color: #eee;
+      padding: 24px;
+    }
+    h1 { font-size: 22px; margin-bottom: 4px; }
+    .subtitle { font-size: 13px; color: #888; margin-bottom: 20px; }
+    .layout {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      max-width: 1100px;
+    }
+    /* left column holds the board AND the rules, so they share the same width
+       and grow/shrink together as one group */
+    .left-col {
+      flex: 1 1 400px;
+      min-width: 320px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .board-wrap {
+      width: 100%;
+    }
+    canvas {
+      border: 2px solid #333;
+      border-radius: 12px;
+      background: #1a1a1a;
+      display: block;
+      max-width: 100%;
+    }
+    .panel {
+      width: 220px;
+      flex-shrink: 0;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .panel label {
+      font-size: 11px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    select, button {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: 1px solid #444;
+      background: #222;
+      color: #eee;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    button:hover { background: #2a2a2a; }
+    button.primary {
+      background: #1b4d2b;
+      border-color: #2d6b3e;
+      font-weight: bold;
+    }
+    button.primary:hover { background: #245e35; }
+    hr { border: none; border-top: 1px solid #2a2a2a; margin: 4px 0; }
+    .status-box {
+      background: #141414;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 12px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      min-height: 90px;
+    }
+    .log-box {
+      background: #141414;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 8px;
+      font-size: 11px;
+      color: #999;
+      min-height: 32px;
+      line-height: 1.5;
+    }
+    .legend {
+      font-size: 11px;
+      color: #666;
+      line-height: 2;
+    }
+    .dot {
+      display: inline-block;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      vertical-align: middle;
+      margin-right: 5px;
+    }
+    .p1dot { background: #44ccff; }
+    .p2dot { background: #ff5555; }
+
+    /* ── collapsible rules ── */
+    .rules-section {
+      margin-top: 16px;
+      width: 100%;
+    }
+    .rules-section h2 {
+      font-size: 15px;
+      color: #888;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      border-bottom: 1px solid #2a2a2a;
+      padding-bottom: 8px;
+    }
+    .chapter {
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+    .chapter-header {
+      width: 100%;
+      background: #1a1a1a;
+      border: none;
+      color: #ccc;
+      font-size: 13px;
+      font-family: inherit;
+      padding: 12px 16px;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.15s;
+    }
+    .chapter-header:hover { background: #222; }
+    .chapter-header .arrow {
+      font-size: 10px;
+      color: #555;
+      transition: transform 0.2s;
+    }
+    .chapter-header.open .arrow { transform: rotate(180deg); }
+    .chapter-body {
+      display: none;
+      padding: 14px 18px 16px;
+      background: #141414;
+      font-size: 13px;
+      color: #aaa;
+      line-height: 1.75;
+      border-top: 1px solid #2a2a2a;
+    }
+    .chapter-body.open { display: block; }
+    .chapter-body ul { padding-left: 18px; margin: 6px 0; }
+    .chapter-body li { margin-bottom: 4px; }
+    .chapter-body strong { color: #ddd; }
+    .chapter-body .tag {
+      display: inline-block;
+      padding: 1px 7px;
+      border-radius: 4px;
+      font-size: 11px;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+    .tag-purple { background: #4a2060; color: #caa; }
+    .tag-cyan   { background: #006060; color: #aee; }
+    .tag-green  { background: #1a5a20; color: #aea; }
+    .tag-orange { background: #7a3a00; color: #fca; }
+    .tag-blue   { background: #1a3550; color: #acd; }
+    .site-footer {
+      max-width: 1100px;
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid #2a2a2a;
+      color: #777;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .site-footer a { color: #8fbfff; }
+  </style>
+</head>
+<body>
+  <h1>Checkers+Hex MVP</h1>
+  <p class="subtitle">Place pieces to connect your two sides. Capture by jumping over opponent pieces.</p>
+  <div class="layout">
+    <div class="left-col">
+      <div class="board-wrap">
+        <canvas id="board"></canvas>
+      </div>
+      <!-- rules placeholder — real rules moved here by script below -->
+    </div>
+    <div class="panel">
+
+      <label>Player Names <span style="font-weight:normal;font-size:11px;opacity:0.6">(optional)</span></label>
+      <input id="name1" type="text" placeholder="Player 1 (X — blue)"
+             style="width:100%;box-sizing:border-box;background:#1e1e1e;border:1px solid #444;
+                    color:#eee;padding:5px 8px;border-radius:4px;margin-bottom:5px;font-size:13px"/>
+      <input id="name2" type="text" placeholder="Player 2 (O — red)"
+             style="width:100%;box-sizing:border-box;background:#1e1e1e;border:1px solid #444;
+                    color:#eee;padding:5px 8px;border-radius:4px;margin-bottom:8px;font-size:13px"/>
+
+      <label>Game Mode</label>
+      <select id="mode">
+        <option value="hvh">Human vs Human</option>
+        <option value="hva">Human vs Agent</option>
+      </select>
+      <button class="primary" id="newGame">&#9654; New Game</button>
+
+      <hr />
+      <label>Captures</label>
+      <div id="captureCount" style="font-size:12px;color:#aaa;margin-bottom:6px;">—</div>
+
+      <hr />
+      <label>Replay</label>
+      <button id="playReplay">&#9654; Play</button>
+      <button id="pauseReplay">&#9646;&#9646; Pause</button>
+      <button id="prevTurn">&#8592; Prev Turn</button>
+      <button id="nextTurn">Next Turn &#8594;</button>
+
+      <hr />
+      <label>Log</label>
+      <button id="downloadLog"
+              style="width:100%;background:#1a3a1a;border:1px solid #2a5a2a;color:#8f8;
+                     padding:7px;border-radius:5px;cursor:pointer;font-size:13px;margin-bottom:4px;">
+        &#8659; Download Game Log (JSON)
+      </button>
+      <div style="font-size:11px;color:#666;margin-bottom:8px;">
+        Includes all branches &amp; forks
+      </div>
+
+      <hr />
+      <label>Status</label>
+      <div class="status-box" id="status"></div>
+      <div class="log-box" id="log"></div>
+      <hr />
+      <div class="legend">
+        <span class="dot p1dot"></span> Player 1 (X)<br>
+        <span class="dot p2dot"></span> Player 2 (O)<br>
+        <br>
+        Win by connecting any two opposite sides:<br>
+        green edges (top &#8596; bottom) or red edges (left &#8596; right)
+      </div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+
+  <!-- ── collapsible rules — sits directly below board+panel, no scrolling needed ── -->
+  <div class="rules-section" id="rulesSection">
+    <h2>How to play</h2>
+
+    <div class="chapter">
+      <button class="chapter-header" onclick="toggleChapter(this)">
+        1 — The goal <span class="arrow">▼</span>
+      </button>
+      <div class="chapter-body">
+        Connect <strong>any two opposite sides</strong> of the board with an unbroken line of your pieces.<br><br>
+        The board has four sides:
+        <ul>
+          <li><strong>Top and bottom</strong> — marked with a green border</li>
+          <li><strong>Left and right</strong> — marked with a red border</li>
+        </ul>
+        You win the moment your pieces form a continuous path from one side to the directly opposite side.
+        The path can bend and zigzag in any direction — it does not have to be a straight line.
+        <br><br>
+        <strong>Either player can win across either axis.</strong> No sides are assigned.
+      </div>
+    </div>
+
+    <div class="chapter">
+      <button class="chapter-header" onclick="toggleChapter(this)">
+        2 — Taking a turn <span class="arrow">▼</span>
+      </button>
+      <div class="chapter-body">
+        Players alternate turns. On each turn, one of two things happens:<br><br>
+        <ul>
+          <li><strong>If you have a piece that can capture</strong> — you must capture. You cannot place freely.</li>
+          <li><strong>If no capture is available</strong> — click any empty cell on the board to place your piece there.</li>
+        </ul>
+        Pieces never move after being placed — the only exception is a capture jump.
+      </div>
+    </div>
+
+    <div class="chapter">
+      <button class="chapter-header" onclick="toggleChapter(this)">
+        3 — Placing a piece <span class="arrow">▼</span>
+      </button>
+      <div class="chapter-body">
+        When no capture is available, click any empty cell to place your piece.<br><br>
+        You may place next to your own pieces, next to opponent pieces, or anywhere on the board.
+        There are no restricted zones.<br><br>
+        If your placement creates a capture opportunity for your piece, the capture resolves immediately
+        and automatically during the same turn.
+      </div>
+    </div>
+
+    <div class="chapter">
+      <button class="chapter-header" onclick="toggleChapter(this)">
+        4 — Captures <span class="arrow">▼</span>
+      </button>
+      <div class="chapter-body">
+        A capture is a jump. Your piece jumps <strong>over</strong> an opponent's piece and lands on
+        the empty cell directly beyond it. The opponent's piece is removed.<br><br>
+        For a capture to be legal, all of these must be true:
+        <ul>
+          <li>Your piece is on the board</li>
+          <li>An opponent's piece is directly adjacent along a <strong>diagonal direction</strong></li>
+          <li>The cell on the far side of the opponent's piece is <strong>empty</strong></li>
+        </ul>
+        You cannot capture sideways (East ↔ West). Only diagonal directions count for capture.
+      </div>
+    </div>
+
+    <div class="chapter">
+      <button class="chapter-header" onclick="toggleChapter(this)">
+        5 — Mandatory capture <span class="arrow">▼</span>
+      </button>
+      <div class="chapter-body">
+        If any of your pieces can capture at the start of your turn, you <strong>must</strong> capture.
+        You cannot place a new piece instead.<br><br>
+        <strong>How to capture step by step:</strong>
+        <ul>
+          <li>Pieces that must capture are highlighted <span class="tag tag-purple">purple</span></li>
+          <li>Click a purple piece to select it</li>
+          <li>Valid landing cells appear in <span class="tag tag-green">bright green</span> — click one to jump</li>
+          <li>The selected piece turns <span class="tag tag-cyan">cyan</span> while you choose</li>
+          <li>If you change your mind, click a different purple piece to re-select</li>
+        </ul>
+        If multiple captures are available, you may choose which one to take — but you must take one.
+      </div>
+    </div>
+
+    <div class="chapter">
+      <button class="chapter-header" onclick="toggleChapter(this)">
+        6 — Chain captures <span class="arrow">▼</span>
+      </button>
+      <div class="chapter-body">
+        After a capture, if your piece can jump again from its new position, you <strong>must</strong> continue jumping.<br><br>
+        The chain ends only when no further jump is available from the landing cell.
+        Your turn ends at that point.<br><br>
+        During a chain, green landing cells appear after each jump — keep clicking until the chain ends.
+      </div>
+    </div>
+
+    <div class="chapter">
+      <button class="chapter-header" onclick="toggleChapter(this)">
+        7 — Capture directions <span class="arrow">▼</span>
+      </button>
+      <div class="chapter-body">
+        On this hex board, captures are only legal along two diagonal axes:
+        <ul>
+          <li><strong>Northeast ↔ Southwest</strong></li>
+          <li><strong>Northwest ↔ Southeast</strong></li>
+        </ul>
+        The <strong>East ↔ West</strong> direction is <strong>not</strong> a capture direction.<br><br>
+        All six hex directions still count for <strong>connection</strong> — your winning path can travel in any direction.
+      </div>
+    </div>
+
+    <div class="chapter">
+      <button class="chapter-header" onclick="toggleChapter(this)">
+        8 — Replay &amp; game log <span class="arrow">▼</span>
+      </button>
+      <div class="chapter-body">
+        After a game (or during one), use the <strong>Replay</strong> controls to review every move:<br><br>
+        <ul>
+          <li><strong>▶ Play</strong> — auto-plays through all turns</li>
+          <li><strong>⏸ Pause</strong> — stops auto-play</li>
+          <li><strong>← Prev Turn</strong> — step back one turn</li>
+          <li><strong>Next Turn →</strong> — step forward one turn</li>
+        </ul>
+        If you go back and make a different move, the game records it as a <strong>fork</strong> — a new branch from that point.
+        All branches are saved.<br><br>
+        Click <strong>↓ Download Game Log (JSON)</strong> to save a full record of the session, including all branches and forks.
+      </div>
+    </div>
+
+    <div class="chapter">
+      <button class="chapter-header" onclick="toggleChapter(this)">
+        9 — Colour guide <span class="arrow">▼</span>
+      </button>
+      <div class="chapter-body">
+        <ul>
+          <li><strong>Blue circle</strong> — Player 1's piece</li>
+          <li><strong>Red circle</strong> — Player 2's piece</li>
+          <li><span class="tag tag-purple">purple</span> — a piece that must capture this turn</li>
+          <li><span class="tag tag-cyan">cyan</span> — the piece you have selected</li>
+          <li><span class="tag tag-green">bright green</span> — a valid landing cell — click to jump</li>
+          <li><span class="tag tag-orange">orange</span> — a piece that was just captured</li>
+          <li><span class="tag tag-blue">blue path</span> — the winning connection</li>
+          <li><strong>Green border</strong> — top and bottom edges of the board</li>
+          <li><strong>Red border</strong> — left and right edges of the board</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="chapter">
+      <button class="chapter-header" onclick="toggleChapter(this)">
+        10 — Things that are not allowed <span class="arrow">▼</span>
+      </button>
+      <div class="chapter-body">
+        <ul>
+          <li>Placing on an occupied cell</li>
+          <li>Moving a piece without capturing</li>
+          <li>Capturing sideways (East ↔ West)</li>
+          <li>Capturing without an empty landing cell beyond the opponent</li>
+          <li>Ignoring a capture when one is available at the start of your turn</li>
+          <li>Winning by eliminating all opponent pieces — connection is the only win condition</li>
+          <li>Piece promotion or kings — all pieces are equal throughout the game</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="site-footer">
+    © 2026 Naz Akgül. All rights reserved. Working title: Checkers + Hex.
+    <br />
+    Forks welcome for non-commercial playtesting and contribution.
+    <br />
+    Contact:
+    <a href="https://nazakgul.games" target="_blank" rel="noopener noreferrer">nazakgul.games</a>
+  </footer>
+
+  <script>
+    function toggleChapter(btn){
+      btn.classList.toggle('open');
+      var body = btn.nextElementSibling;
+      body.classList.toggle('open');
+    }
+    // Move the rules into the left column so they sit directly under the board
+    // and share the board's width — growing/shrinking together as one group.
+    (function(){
+      var rules = document.getElementById('rulesSection');
+      var left  = document.querySelector('.left-col');
+      if(rules && left){ left.appendChild(rules); }
+    })();
+  </script>
+</body>
+</html>

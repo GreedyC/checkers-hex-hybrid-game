@@ -1,0 +1,9 @@
+{
+  "name": "checkers-hex-mvp",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "start": "node src/cli.js"
+  }
+}

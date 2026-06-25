@@ -1,0 +1,30 @@
+# dependencies
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# logs
+*.log
+npm-debug.log*
+
+# environment & secrets — NEVER commit these
+.env
+.env.*
+.env.local
+.env.development
+.env.production
+.env.staging
+*.pem
+*.key
+*.p12
+*.pfx
+secrets.json
+secrets.yaml
+secrets.yml
+config/secrets.*
+
+# local agent/editor notes
+.goosehints
+
