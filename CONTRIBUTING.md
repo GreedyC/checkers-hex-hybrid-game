@@ -1,56 +1,45 @@
 # Contributing
 
-Thank you for your interest in improving Checkers + Hex.
+Thank you for your interest in Checkers + Hex! Contributions of every size are welcome — a typo fix, a bug report, a new agent, or a whole new idea.
 
-This is an evolving abstract strategy prototype designed by Naz Akgül. Contributions are welcome for playtesting, feedback, bug reports, rule discussion, UI improvements, and code improvements.
+This repository is **v1, frozen**. The live game at <https://checkers-hex.nazakgul.games> has moved on since. v1 stays here so anyone can build on it, so forks and experiments are very welcome.
+
+## Ways to help
+
+- Report a bug or an unclear game state (screenshots help a lot)
+- Point out where the rules text is ambiguous
+- Improve accessibility, the UI, or browser support
+- Write a smarter agent, or tooling to run agent-vs-agent games
+- Improve replay and logging
+- Add tests for the rules engine
+- Pick something from [docs/IDEAS.md](docs/IDEAS.md)
 
 ## How to contribute
 
-1. Fork the repository.
-2. Create a new branch for your change.
-3. Make your edits.
-4. Test the game in a browser by opening `index.html`.
-5. Submit a pull request with a short explanation of what changed and why.
+1. Fork the repository and create a branch.
+2. Make your change.
+3. Test it by opening `index.html` in a browser (no install needed). If you add tests, run `npm test`.
+4. Open a pull request saying what changed and why.
 
-## Good contribution types
+Not sure where to start? Open an [issue](https://github.com/comoyomalove/checkers-hex-hybrid-game/issues) and ask.
 
-Useful contributions include:
+## Proposing a rule change
 
-- bug reports
-- screenshots or recordings of unclear gameplay states
-- browser compatibility reports
-- rule ambiguity reports
-- UI/UX improvements
-- accessibility improvements
-- replay/logging improvements
-- agent/playtesting improvements
-- documentation improvements
-
-## Rule changes
-
-If you propose a rule change, please include:
+The design follows one principle: **inherit, don't invent**. Rules come from Checkers or Hex wherever possible; new rules are added only when the two parents cannot combine. If you propose a change, please include:
 
 - the current rule
 - the proposed rule
-- why the change improves the game
-- at least one example board situation if relevant
+- which parent it comes from (or why a new rule is needed)
+- an example board situation, if relevant
 
-Please do not silently change core rules in code without explaining the design reason.
+## Please don't commit
 
-## Intellectual property and use
+Secrets, `.env` files, credentials, or personal files.
 
-You may fork this repository for non-commercial playtesting, study, feedback, and proposing improvements.
+## Licence
 
-You may not sell, commercially publish, rebrand, redistribute as a separate product, or claim ownership of this project or derivative versions without written permission from Naz Akgül.
+By contributing, you agree your contribution is released under the [MIT License](LICENSE) of this project.
 
-By submitting a contribution, you agree that Naz Akgül may use, modify, incorporate, publish, and distribute that contribution as part of this project.
+## Code of conduct
 
-## Private design materials
-
-Please do not commit private planning notes, internal GDD drafts, local prompts, `.goosehints`, `.env` files, secrets, credentials, or unrelated personal files.
-
-## Contact
-
-For collaboration or licensing inquiries:
-
-https://nazakgul.games
+Everyone taking part is expected to follow the [Code of Conduct](CODE_OF_CONDUCT.md).

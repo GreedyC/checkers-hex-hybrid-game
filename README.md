@@ -2,6 +2,31 @@
 
 A two-player strategy game that combines the connection goal of Hex with the jump capture tactics of Checkers.
 
+## The story
+
+Checkers + Hex is a hybrid of two classic board games, designed by Naz Akgül. The rule of thumb was **inherit, don't invent**: keep rules from one parent game wherever they still work, blend them where both have something to offer, and add a new rule only when nothing else fits. The result:
+
+- **Placement only** (from Hex) — you place a piece each turn; pieces never move except when capturing
+- **Connection win** (from Hex) — join two opposite sides of the board
+- **Jump capture along the diagonal axes** (from Checkers) — leap over an adjacent opponent piece
+- **Mandatory capture** (from Checkers) — if you can capture, you must
+
+## What v1 contains
+
+This repository is **v1**, frozen as it was first released. It runs in the browser with no install and includes:
+
+- a **rules engine** — legal moves, mandatory capture, capture chains, connection win
+- a built-in **agent** to play against (connection-first)
+- **replay** — step through any game, including forks when you rewind and play a different move
+- **game logs** — download a full JSON record of every turn
+- a **visualisation** of the hex board in `index.html`
+
+The live game at <https://checkers-hex.nazakgul.games> has moved on since. v1 is here for anyone who wants to build on it.
+
+Design notes: [Hybrid_GDD.md](Hybrid_GDD.md) · Full rules: [Player_Facing_Ruleset.md](Player_Facing_Ruleset.md)
+
+---
+
 ---
 
 ## How to play
@@ -12,13 +37,13 @@ A two-player strategy game that combines the connection goal of Hex with the jum
 2. Click the green **Code** button
 3. Click **Download ZIP**
 4. Open your Downloads folder and double-click the ZIP file to unzip it
-5. You will now have a folder called `checkers-hex-mvp`
+5. You will now have a folder called `checkers-hex-hybrid-game-main`
 
 ---
 
 ### Step 2 — Open the game
 
-1. Open the `checkers-hex-mvp` folder
+1. Open the `checkers-hex-hybrid-game-main` folder
 2. Find the file called **`index.html`**
 3. Double-click it
 4. It opens automatically in your web browser — no installation needed
@@ -159,35 +184,18 @@ The game runs entirely in your browser. You do not need to install anything.
 
 ---
 
-## Contributing
-
-You are welcome to fork this repository for non-commercial playtesting, study, feedback, and proposing improvements.
-
-If you would like to suggest a change:
-
-1. Fork the repository.
-2. Test your idea locally by opening `index.html`.
-3. Submit a pull request or issue explaining the change.
-
-Please do not use this project commercially, rebrand it, redistribute it as a separate product, or claim ownership without written permission.
-
-For collaboration or licensing inquiries:
-
-https://nazakgul.games
-
 ---
 
-## Intellectual property notice
+## Room for improvement — ideas welcome
 
-Checkers + Hex is a working title for an original hybrid abstract strategy game designed by Naz Akgül.
+v1 is a starting point, not a finished game. Some things that would make it better: tests for the rules engine, agent-vs-agent play, a stronger agent, loading saved logs back into replay, keyboard and colour-blind-friendly play.
 
-The game design, source code, rules presentation, interface, written materials, and related materials in this repository are Copyright © 2026 Naz Akgül. All rights reserved unless otherwise stated.
+Ready-to-paste issue texts are in [docs/IDEAS.md](docs/IDEAS.md). Your own ideas are just as welcome — open an [issue](https://github.com/comoyomalove/checkers-hex-hybrid-game/issues).
 
-This repository is provided for personal viewing, playtesting, study, feedback, and contribution to the original project. Forks are welcome for non-commercial playtesting and proposing improvements back to the project.
+## Contributing
 
-No permission is granted to sell, commercialize, rebrand, redistribute as a separate product, claim ownership, or create commercial derivative works without prior written permission.
+Forks, experiments and pull requests are all welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) to get started. Everyone taking part follows the [Code of Conduct](CODE_OF_CONDUCT.md) (Contributor Covenant 2.1); questions and reports go through GitHub issues.
 
-For licensing, collaboration, publication, or commercial inquiries, please visit:
+## Licence
 
-https://nazakgul.games
-
+[MIT](LICENSE) © 2026 Naz Akgül. Use it, change it, build on it — just keep the copyright and licence notice.
