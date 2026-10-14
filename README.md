@@ -199,3 +199,7 @@ Forks, experiments and pull requests are all welcome. See [CONTRIBUTING.md](CONT
 ## Licence
 
 [MIT](LICENSE) © 2026 Naz Akgül. Use it, change it, build on it — just keep the copyright and licence notice.
+
+## Contact
+
+Made by Naz Akgül — portfolio and other projects: [nazakgul.games](https://nazakgul.games). Play the current game: [checkers-hex.nazakgul.games](https://checkers-hex.nazakgul.games). Questions and ideas: [Discussions](https://github.com/comoyomalove/checkers-hex-hybrid-game/discussions).
